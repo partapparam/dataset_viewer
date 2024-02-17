@@ -69,6 +69,7 @@ A WebApp to allow users to store and view their CSV datasets.
 - [ ] Code cleansing
   - [ ] `fileRouter` functions are long, they need to be separated into smaller functions
   - [ ] Detail Page table view should be a separate component
+- [ ] Saving the content of the file is causing an error due to the CSV stream not returning rows.
 - [ ] Datasets Detail Page
   - [ ] Dataset rows are duplicated and added to the table
   - [ ] Add in charts and visualizations with D3
