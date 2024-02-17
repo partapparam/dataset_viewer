@@ -2,17 +2,15 @@ const csv = require("@fast-csv/parse")
 
 // Save each dataset as a collection in MongoDB
 // CollectionName = name of upload + time of upload
-const createRecordsInMongo = async (client, collectionName, data) => {
+const createRecordsInMongo = async (db, collectionName, data) => {
   try {
     const parsedDataInJson = await parseDataFromBuffer(data)
-    const db = await client.db(process.env.DBNAME)
     const collection = await db
       .collection(collectionName)
       .insertMany(parsedDataInJson)
-    //   console.log(collection.insertedCount)
     return collection.insertedCount
   } catch (err) {
-    // console.log(err)
+    console.log(err)
     throw new Error("The csv file was empty")
   }
 }
@@ -20,7 +18,7 @@ const createRecordsInMongo = async (client, collectionName, data) => {
  *
  * @param {Buffer} data
  */
-const parseDataFromBuffer = (data) => {
+const parseDataFromBuffer = async (data) => {
   let allRows = []
   /**
    * discardUnmappedColumns - This is only valid in the case when the number
@@ -49,4 +47,4 @@ const parseDataFromBuffer = (data) => {
   return allRows
 }
 
-module.exports = { createRecordsInMongo, parseDataFromMongoGFS }
+module.exports = { createRecordsInMongo, parseDataFromBuffer }

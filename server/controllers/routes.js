@@ -26,11 +26,14 @@ fileRouter.get("/datasets/id", async (req, res) => {
     // Res.Write() will take a Buffer or String Data chunk and send it to the client as a CSV string
     return res.status(200).write(data)
   })
-
   // handle error event
   downloadStream.on("error", function (err) {
     console.log("here is an error", err)
     return res.status(404).send({ message: "File not found" })
+  })
+
+  downloadStream.on("end", () => {
+    return res.end()
   })
 })
 
@@ -57,7 +60,7 @@ fileRouter.get("/datasets", async (req, res) => {
 fileRouter.post("/dataset", upload.single("file"), async (req, res) => {
   // Multer adds body, file, and files object to our request object
   // start by connecting to the client and our bucket
-  const db = client.db("datasets")
+  const db = client.db(process.env.DBNAME)
   const bucket = new GridFSBucket(db, {
     bucketName: process.env.BUCKET,
   })
@@ -85,7 +88,7 @@ fileRouter.post("/dataset", upload.single("file"), async (req, res) => {
     )
     //   handle data chunk event
     readStream.on("data", async (chunk) => {
-      await createRecordsInMongo(collectionName, chunk)
+      await createRecordsInMongo(db, collectionName, chunk)
     })
     //   handle readStream End event
     //   delete stored file from ./uploads
