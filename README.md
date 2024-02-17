@@ -49,7 +49,7 @@ A WebApp to allow users to store and view their CSV datasets.
   # initialize Tailwind
   npx tailwindcss init -p
 ```
-4. Create MongoDB Cluster and get URI for Node.js Driver. [Get started]([url](https://www.mongodb.com/docs/drivers/node/v4.1/quick-start/))
+4. Create MongoDB Cluster and get URI for Node.js Driver. [Getting started with MongoDB](https://www.mongodb.com/docs/drivers/node/v4.1/quick-start/)
 5. Copy `server/example.env` structure into `server/env`file
 ```
   PORT=5000
@@ -68,6 +68,7 @@ A WebApp to allow users to store and view their CSV datasets.
 - [ ] Add Tests for server and client
 - [ ] Code cleansing
   - [ ] `fileRouter` functions are long, they need to be separated into smaller functions
+  - [ ] Detail Page table view should be a separate component
 - [ ] Datasets Detail Page
   - [ ] Dataset rows are duplicated and added to the table
   - [ ] Add in charts and visualizations with D3
