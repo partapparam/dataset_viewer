@@ -3,7 +3,7 @@ import axios from "axios"
 
 // define Axios Instance with the base URL for API
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:5000",
+  baseURL: "http://localhost:5000/api",
 })
 
 // fetch All Datasets
