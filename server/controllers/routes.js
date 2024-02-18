@@ -7,8 +7,8 @@ const { parseAndSaveDataFromBuffer } = require("../utils/helperFunctions")
 
 // create MongoDB node client
 const client = new MongoClient(MONGOURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+  // useNewUrlParser: true,
+  // useUnifiedTopology: true,
 })
 
 /**

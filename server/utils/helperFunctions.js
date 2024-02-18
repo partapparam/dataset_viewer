@@ -17,6 +17,7 @@ const createRecordsInMongo = async (db, collectionName, data) => {
  * @param {String} collectionName
  * @param {Buffer} data
  */
+
 const parseAndSaveDataFromBuffer = (db, collectionName, data) => {
   let allRows = []
   /**
