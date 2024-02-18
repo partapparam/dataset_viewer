@@ -4,10 +4,8 @@ const csv = require("@fast-csv/parse")
 // CollectionName = name of upload + time of upload
 const createRecordsInMongo = async (db, collectionName, data) => {
   try {
-    const parsedDataInJson = await parseDataFromBuffer(data)
-    const collection = await db
-      .collection(collectionName)
-      .insertMany(parsedDataInJson)
+    const collection = await db.collection(collectionName).insertMany(data)
+    console.log("saved Scuccesfully")
     return collection.insertedCount
   } catch (err) {
     console.log(err)
@@ -15,10 +13,11 @@ const createRecordsInMongo = async (db, collectionName, data) => {
   }
 }
 /**
- *
+ * @param {Db} db
+ * @param {String} collectionName
  * @param {Buffer} data
  */
-const parseDataFromBuffer = async (data) => {
+const parseAndSaveDataFromBuffer = (db, collectionName, data) => {
   let allRows = []
   /**
    * discardUnmappedColumns - This is only valid in the case when the number
@@ -41,10 +40,11 @@ const parseDataFromBuffer = async (data) => {
     .on("data", (row) => {
       allRows.push(row)
     })
-    .on("end", async (rowCount) => {
+    .on("end", (rowCount) => {
       console.log(`Parsed ${rowCount} rows`)
+      console.log(allRows.length)
+      const saveSuccess = createRecordsInMongo(db, collectionName, allRows)
     })
-  return allRows
 }
 
-module.exports = { createRecordsInMongo, parseDataFromBuffer }
+module.exports = { createRecordsInMongo, parseAndSaveDataFromBuffer }

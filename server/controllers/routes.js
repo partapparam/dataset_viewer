@@ -3,7 +3,7 @@ const { MongoClient, GridFSBucket } = require("mongodb")
 const MONGOURI = process.env.URI
 const { upload } = require("../middleware/fileUpload")
 const fs = require("fs")
-const { createRecordsInMongo } = require("../utils/helperFunctions")
+const { parseAndSaveDataFromBuffer } = require("../utils/helperFunctions")
 
 // create MongoDB node client
 const client = new MongoClient(MONGOURI, {
@@ -87,8 +87,8 @@ fileRouter.post("/dataset", upload.single("file"), async (req, res) => {
       })
     )
     //   handle data chunk event
-    readStream.on("data", async (chunk) => {
-      await createRecordsInMongo(db, collectionName, chunk)
+    readStream.on("data", (chunk) => {
+      parseAndSaveDataFromBuffer(db, collectionName, chunk)
     })
     //   handle readStream End event
     //   delete stored file from ./uploads

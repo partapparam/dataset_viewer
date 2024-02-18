@@ -56,7 +56,7 @@ const DatasetForm = () => {
               {...register("file")}
               required
               id="file"
-              accept=".csv, .json"
+              accept=".csv"
               onChange={handleChange}
             />
             <span>Add</span>
