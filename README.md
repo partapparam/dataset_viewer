@@ -25,8 +25,9 @@ A WebApp to allow users to store and view their CSV datasets.
 ### Assumptions
 
 - I was confused as to why we would store the CSV file and the contents in a database
-  - The file is stored in GridFS and a collection was created for each file submitted
-  - No validation is done for duplicate files, this will be an issue in production mode
+  -  The file is stored in GridFS and a collection was created for each file submitted
+-  No validation is done for duplicate file uploads from the user, I assume they will only submit a file once.
+
 - Column Headers
   - CSV Parser is set up to remove any columns that do not have a Header
 - I built this to handle any CSV file upload
@@ -48,11 +49,10 @@ A WebApp to allow users to store and view their CSV datasets.
 ```sh
   cd client
   npm install
-  # initialize Tailwind
-  npx tailwindcss init -p
 ```
 
-4. Create MongoDB Cluster and get URI for Node.js Driver. [Get started](<[url](https://www.mongodb.com/docs/drivers/node/v4.1/quick-start/)>)
+4. Create MongoDB Cluster and get URI for Node.js Driver. [Getting started with MongoDB](https://www.mongodb.com/docs/drivers/node/v4.1/quick-start/)
+
 5. Copy `server/example.env` structure into `server/env`file
 
 ```
@@ -74,8 +74,11 @@ A WebApp to allow users to store and view their CSV datasets.
 - [ ] Add Tests for server and client
 - [ ] Code cleansing
   - [ ] `fileRouter` functions are long, they need to be separated into smaller functions
+  - [ ] Detail Page table view should be a separate component
+- [ ] Saving the content of the file is causing an error due to the CSV stream not returning rows.
 - [ ] Datasets Detail Page
   - [ ] Dataset rows are duplicated and added to the table
+    - [ ] State Management libraries such as Redux should eliminate this
   - [ ] Add in charts and visualizations with D3
 - [ ] Dataset Form Submission
   - [ ] Add functionality to upload JSON files.
