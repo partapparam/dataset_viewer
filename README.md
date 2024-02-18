@@ -70,6 +70,7 @@ A WebApp to allow users to store and view their CSV datasets.
 - [ ] Saving the content of the file is causing an error due to the CSV stream not returning rows.
 - [ ] Datasets Detail Page
   - [ ] Dataset rows are duplicated and added to the table
+    - [ ] State Management libraries such as Redux should eliminate this
   - [ ] Add in charts and visualizations with D3
 - [ ] Dataset Form Submission
   - [ ] Add functionality to upload JSON files.
