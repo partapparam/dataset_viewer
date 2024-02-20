@@ -3,7 +3,7 @@ const app = express()
 require("dotenv").config()
 const fs = require("fs")
 const cors = require("cors")
-const { fileRouter } = require("./controllers/routes")
+const { fileRouter } = require("./routes/routes")
 // Set cors Policy
 app.use(
   cors({
