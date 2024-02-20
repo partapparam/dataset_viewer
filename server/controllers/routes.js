@@ -2,7 +2,7 @@ const fileRouter = require("express").Router()
 const { MongoClient, GridFSBucket } = require("mongodb")
 const MONGOURI = process.env.URI
 const { upload } = require("../middleware/fileUpload")
-const fs = require("fs")
+const { Readable } = require("node:stream")
 const { parseAndSaveDataFromBuffer } = require("../utils/helperFunctions")
 
 // create MongoDB node client
@@ -58,53 +58,44 @@ fileRouter.get("/datasets", async (req, res) => {
  * Post user submitted file and content to DB
  */
 fileRouter.post("/dataset", upload.single("file"), async (req, res) => {
+  const { buffer, size, originalname, mimetype } = req.file
+  const { name } = req.body
   // Multer adds body, file, and files object to our request object
   // start by connecting to the client and our bucket
-  const db = client.db(process.env.DBNAME)
-  const bucket = new GridFSBucket(db, {
-    bucketName: process.env.BUCKET,
-  })
-
   try {
+    const db = client.db(process.env.DBNAME)
+    const bucket = new GridFSBucket(db, {
+      bucketName: process.env.BUCKET,
+    })
     //   get date of submission
     const submitDate = new Date(Date.now()).toLocaleDateString()
     // create collectionName for MongoDb collection for this upload
-    const collectionName = `${req.file?.filename}-${submitDate}`
-    // start stream for uploaded file
-    let readStream = fs.createReadStream(
-      req.file?.destination + "/" + req.file?.filename
-    )
+    const collectionName = `${name}-${submitDate}`
+    // start stream for uploaded file buffer
+    let readStream = Readable.from(buffer)
 
     // bucket.openUploadStream will start uploading chunks to DB
     //   added metadata is stored on file
     readStream.pipe(
-      bucket.openUploadStream(req.file.filename, {
+      bucket.openUploadStream(originalname, {
         metadata: {
-          originalName: req.file?.originalname,
-          mimetype: req.file?.mimetype,
+          originalName: originalname,
+          mimetype: mimetype,
           collectionName: collectionName,
+          size_mb: size / (1024 * 1024),
         },
       })
     )
     //   handle data chunk event
     readStream.on("data", (chunk) => {
+      // console.log(chunk)
       parseAndSaveDataFromBuffer(db, collectionName, chunk)
     })
     //   handle readStream End event
     //   delete stored file from ./uploads
     //   Send Return message to client
     readStream.on("end", () => {
-      fs.unlink("./uploads/" + req.file?.filename, (err) => {
-        if (err) {
-          res.status(500).send({
-            message: "Could not delete the file. " + err,
-          })
-        }
-        // client.close()
-        res.status(200).send({
-          message: "File has been uploaded",
-        })
-      })
+      return res.status(200).send("Successfully loaded the file")
     })
   } catch (err) {
     console.log("we have an error", err)
