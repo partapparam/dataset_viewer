@@ -25,7 +25,7 @@ const saveDatasetContents = async (db, buffer, collectionName, mimetype) => {
       datatypes: datasetObjectTypes,
     }
     await _saveDocuments(db, collectionName, parsedData)
-    await _saveDocument(db, "dataset-datatypes", datasetObjectTypesDocument)
+    await _saveDocument(db, datasetObjectTypesDocument)
     return "success"
   } catch (err) {
     throw new Error("Files could not be saved")
@@ -136,12 +136,13 @@ const _getDataTypesForObject = async (datasetObject) => {
 /**
  *
  * @param {*} db
- * @param {*} collectionName
  * @param {*} data
  */
-const _saveDocument = async (db, collectionName, data) => {
+const _saveDocument = async (db, data) => {
   try {
-    const saved = await db.collection(collectionName).insertOne(data)
+    const saved = await db
+      .collection(process.env.DATASET_TYPE_COLLECTION)
+      .insertOne(data)
     return saved
   } catch (err) {
     throw new Error(err)
@@ -164,4 +165,16 @@ const _saveDocuments = async (db, collectionName, data) => {
   }
 }
 
-module.exports = { saveBufferToGridFs, saveDatasetContents }
+/**
+ *
+ * @param {*} db
+ * @param {*} collectionName
+ * @returns
+ */
+const getDatasetTypes = async (db, collectionName) => {
+  const co = db.collection(process.env.DATASET_TYPE_COLLECTION)
+  //   console.log(co)
+  return await co.findOne({ collection: collectionName })
+}
+
+module.exports = { saveBufferToGridFs, saveDatasetContents, getDatasetTypes }
