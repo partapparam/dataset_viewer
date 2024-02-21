@@ -201,4 +201,7 @@ module.exports = {
   saveDatasetContents,
   getDatasetTypes,
   getDatasetContents,
+  _parseJSONFile,
+  _getDataTypesForObject,
+  _parseDataFromCSVBuffer,
 }
