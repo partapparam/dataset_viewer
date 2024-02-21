@@ -6,6 +6,7 @@ const {
   saveBufferToGridFs,
   saveDatasetContents,
   getDatasetTypes,
+  getDatasetContents,
 } = require("../controllers/dataset")
 const { DBNAME, BUCKET } = process.env
 // create MongoDB node client
@@ -17,7 +18,7 @@ const client = new MongoClient(MONGOURI)
 fileRouter.post("/dataset", upload.single("file"), async (req, res) => {
   const { buffer, size, originalname, mimetype } = req.file
   const { name } = req.body
-  const submitDate = new Date(Date.now()).toLocaleDateString()
+  const submitDate = new Date(Date.now()).toLocaleString()
   const collectionName = `${name}-${submitDate}`
   try {
     const db = client.db(DBNAME)
@@ -41,15 +42,20 @@ fileRouter.post("/dataset", upload.single("file"), async (req, res) => {
 })
 
 /**
- * Get Dataset data-types by CollectionName
+ * Get Dataset data-types and Dataset Contents by CollectionName
  * @param {string} req.query.name - collectionName
  * @returns {object}
  */
 fileRouter.get("/dataset/id", async (req, res) => {
+  const collectionName = req.query.name
   try {
     const db = client.db(DBNAME)
-    const result = await getDatasetTypes(db, req.query.name)
-    res.json({ status: "success", data: result })
+    const datasetTypes = await getDatasetTypes(db, collectionName)
+    const datasetContents = await getDatasetContents(db, collectionName)
+    return res.json({
+      status: "success",
+      data: { datasetTypes: datasetTypes, datasetContents: datasetContents },
+    })
   } catch (err) {
     res.json({ status: "error", data: err.message })
   }
