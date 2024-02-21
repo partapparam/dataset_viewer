@@ -25,8 +25,8 @@ A WebApp to allow users to store and view their CSV datasets.
 ### Assumptions
 
 - I was confused as to why we would store the CSV file and the contents in a database
-  -  The file is stored in GridFS and a collection was created for each file submitted
--  No validation is done for duplicate file uploads from the user, I assume they will only submit a file once.
+  - The file is stored in GridFS and a collection was created for each file submitted
+- No validation is done for duplicate file uploads from the user, I assume they will only submit a file once.
 
 - Column Headers
   - CSV Parser is set up to remove any columns that do not have a Header
