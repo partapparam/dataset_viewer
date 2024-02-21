@@ -135,6 +135,7 @@ const _getDataTypesForObject = async (datasetObject) => {
 
 /**
  *
+ *
  * @param {*} db
  * @param {*} data
  */
@@ -150,6 +151,7 @@ const _saveDocument = async (db, data) => {
 }
 
 /**
+ * Save dataset documents
  *
  * @param {*} db
  * @param {*} collectionName
@@ -166,15 +168,37 @@ const _saveDocuments = async (db, collectionName, data) => {
 }
 
 /**
+ * Fetch dataset data types from Db
  *
- * @param {*} db
- * @param {*} collectionName
+ * @param {Db} db
+ * @param {string} collectionName
  * @returns
  */
 const getDatasetTypes = async (db, collectionName) => {
-  const co = db.collection(process.env.DATASET_TYPE_COLLECTION)
-  //   console.log(co)
-  return await co.findOne({ collection: collectionName })
+  const datasetTypes = db.collection(process.env.DATASET_TYPE_COLLECTION)
+  return await datasetTypes.findOne({ collection: collectionName })
 }
 
-module.exports = { saveBufferToGridFs, saveDatasetContents, getDatasetTypes }
+/**
+ * Fetch Dataset contents from DB
+ *
+ * @param {Db} db
+ * @param {string} collectionName
+ * @returns
+ */
+const getDatasetContents = async (db, collectionName) => {
+  const datasets = db.collection(collectionName)
+  const cursor = datasets.find({})
+  const result = []
+  for await (const doc of cursor) {
+    result.push(doc)
+  }
+  return result
+}
+
+module.exports = {
+  saveBufferToGridFs,
+  saveDatasetContents,
+  getDatasetTypes,
+  getDatasetContents,
+}
